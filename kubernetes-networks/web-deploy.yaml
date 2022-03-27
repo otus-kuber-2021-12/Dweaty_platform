@@ -10,7 +10,7 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 100%
+      maxUnavailable: 0%
       maxSurge: 100%
   template: 
     metadata:
@@ -31,11 +31,12 @@ spec:
               path: /index.html
               port: 8000
           livenessProbe:
-            tcpSocket: { port: 8000 }
+            tcpSocket: 
+              port: 8000
       initContainers:
         - name: init-web
           image: busybox:1.28
-          command: ['sh', '-c', 'wget -O- https://tinyurl.com/otus-k8s-intro | sh']
+          command: ['sh', '-c', 'wget -O- https:///bit.ly/otus-k8s-intro | sh']
           volumeMounts:
             - name: app
               mountPath: /app
