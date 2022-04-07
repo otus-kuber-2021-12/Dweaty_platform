@@ -1,0 +1,40 @@
+tolerations:
+  - key: node-role
+    operator: Equal
+    value: infra
+    effect: NoSchedule
+
+config:
+  inputs: |
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+  outputs: |
+    [OUTPUT]
+        Name es
+        Match *
+        Host elasticsearch-master
+        Logstash_Format On
+        Logstash_Prefix kubernetes_cluster
+        Retry_Limit False 
+  customParsers: |
+    [PARSER]
+        Name nginx-ingress
+        Format json
+        Match   *
+        Time_Format %d/%b/%Y:%H:%M:%S %z
+        Time_Keep   On
+        Remove  time
+        Rename  @timestamp timestamp
+        Rename  time_local timestamp
+extraFiles: 
+  example.conf: | 
+    [FILTER]
+      Name modify
+      Match *
+      Remove time
+      Remove @timestamp
