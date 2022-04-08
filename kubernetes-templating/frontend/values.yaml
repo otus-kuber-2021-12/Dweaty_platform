@@ -1,0 +1,13 @@
+image:
+  tag: v0.3.5
+
+replicas: 1
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8082
+  NodePort: 30260
+
+ingress:
+    host: shop.34.88.245.145.nip.io
