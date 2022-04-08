@@ -1,0 +1,61 @@
+prometheus:
+  ingress:
+      enabled: true
+      annotations: {
+        kubernetes.io/ingress.class: nginx,
+        kubernetes.io/tls-acme: "true",
+        cert-manager.io/cluster-issuer: "letsencrypt-prod",
+        cert-manager.io/acme-challenge-type: http01
+      }
+      path: /
+      hosts:
+        - prometheus.34.123.12.62.nip.io
+      tls:
+        - secretName: prometheus.34.123.12.62.nip.io
+          hosts:
+            - prometheus.34.123.12.62.nip.io
+  prometheusSpec:
+    tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+alertmanager:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+      - alertmanager.34.123.12.62.nip.io
+    paths:
+      - /
+    tls:
+      - secretName: prometheus.34.123.12.62.nip.io
+        hosts:
+          - prometheus.34.123.12.62.nip.io
+
+grafana:
+  ingress:
+      enabled: true
+      annotations: {
+        kubernetes.io/ingress.class: nginx,
+        kubernetes.io/tls-acme: "true",
+        cert-manager.io/cluster-issuer: "letsencrypt-prod",
+        cert-manager.io/acme-challenge-type: http01
+      }
+      path: /
+      hosts:
+        - grafana.34.123.12.62.nip.io
+      tls:
+        - secretName: grafana.34.123.12.62.nip.io
+          hosts:
+            - grafana.34.123.12.62.nip.io
+      additionalDataSources:
+        - name: Loki
+          type: loki
+          access: proxy
+          url: http://loki:3100
+          jsonData:
+            maxLines: 1000

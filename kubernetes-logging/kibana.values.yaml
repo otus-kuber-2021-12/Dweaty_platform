@@ -1,0 +1,15 @@
+ingress:
+ enabled: true
+ annotations: {
+#    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true",
+    cert-manager.io/cluster-issuer: "letsencrypt-prod",
+    cert-manager.io/acme-challenge-type: http01
+ }
+ path: /
+ hosts:
+   -  kibana.34.123.12.62.nip.io
+ tls:
+   - secretName: kibana.34.123.12.62.nip.io
+     hosts: 
+       - kibana.34.123.12.62.nip.io
